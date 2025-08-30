@@ -13,7 +13,7 @@
 # +----------------------------------------------------------------------------+
 
 # ------------ Resources / Documentation involved -------------
-
+# How to make Tkinter look modern? - How to use themes in Tkinter: https://www.reddit.com/r/Python/comments/lps11c/how_to_make_tkinter_look_modern_how_to_use_themes/
 
 # ------------------------- Libraries -------------------------
 import tkinter as tk
@@ -93,7 +93,7 @@ BackwardChaining = Radiobutton(text="Backward chaining", font=FONT, fg=BLACK, bg
 BackwardChaining.grid(column=0, row=1)
 
 # Reset learning button
-resetButton = Button(text="Reset options", command=resetLearningSelect)
+resetButton = Button(text="Reset options", highlightbackground=WHITE, command=resetLearningSelect)
 resetButton.grid(column=0, row=2)
 
 # Goal label
@@ -101,14 +101,15 @@ goalLabel = Label(text="Goal", fg=BLACK, font=FONT, bg=WHITE)
 goalLabel.grid(column=1, row=0)
 
 # Goal Combobox
-var = StringVar()
-goalChoosen = ttk.Combobox(window, textvariable=var, state="readonly")
+style= ttk.Style()
+style.theme_use('default')
+style.configure("TCombobox", background= WHITE)
+goalChoosen = ttk.Combobox(window, foreground=WHITE, state="readonly")
 goalChoosen['values'] = (
     'Manzana',
     'Pera',
     'Limón')
 goalChoosen.grid(column=1, row=1)
-goalChoosen.set('')
 
 # Result label
 resultLabel = Label(text="Result", fg=BLACK, font=FONT, bg=WHITE)
@@ -123,11 +124,10 @@ printResult("TestB")
 # TextBox
 outputText = Text(window, height=20, width=100, bg="light blue")
 outputText.grid(column=0, row=3, columnspan=3, pady=(20, 10))
-var.trace('w', printGoal)  # Favor de no mover esta linea de lugar
 printOutput("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")  # Ejemplo
 
 # Reset output button
-resetButton = Button(text="Reset output", command=resetOutput)
+resetButton = Button(text="Reset output", highlightbackground=WHITE, command=resetOutput)
 resetButton.grid(column=0, row=4)
 
 window.mainloop()
