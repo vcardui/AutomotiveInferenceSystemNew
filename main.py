@@ -13,19 +13,20 @@
 # +----------------------------------------------------------------------------+
 
 # ------------ Resources / Documentation involved -------------
-# How to make Tkinter look modern? - How to use themes in Tkinter: https://www.reddit.com/r/Python/comments/lps11c/how_to_make_tkinter_look_modern_how_to_use_themes/
-
+# Sun Valley ttk theme: https://github.com/rdbende/Sun-Valley-ttk-theme
 
 # ------------------------- Libraries -------------------------
 import tkinter as tk
-from tkinter import *
-from tkinter import messagebox
+from tkinter import IntVar, Radiobutton, Button, Label, StringVar, Entry, Text
 from tkinter import ttk
 
+import sv_ttk
+
 # ---------------------------- GUI constraints ------------------------------- #
+DARK_BLUE2 = "#OB3954"
+DARK_BLUE = "#001111"
 WHITE = "#ffffff"
 BLACK = "#000000"
-FONT = ("Arial", 12)
 
 # -------------------------- GUI Functions ----------------------------- #
 # Output Textbox (blue)
@@ -45,7 +46,7 @@ def printResult(text):
     resultOutput.configure(state="normal")
     resultOutput.delete(0, 'end')
     resultOutput.insert(0, text)
-    resultOutput.configure(state="disabled", disabledbackground="white", disabledforeground="black")
+    resultOutput.configure(state="disabled")
 
 # Learning radiobutton options
 def selectLearning():
@@ -64,8 +65,9 @@ def printGoal(*arg):
 
 # ---------------------------- UI Set up ------------------------------- #
 window = tk.Tk()
-window.title("Agente inteligente")
-window.config(padx=20, pady=20, background=WHITE)
+window.title("Automotive Inference System")
+window.config(padx=20, pady=20)
+sv_ttk.set_theme("dark") # 'light' or 'dark'
 
 # Barra de menu
 barra_menus = tk.Menu()
@@ -85,27 +87,25 @@ window.config(menu=barra_menus)
 
 opcion = IntVar()
 
-ForwardChaining = Radiobutton(text="Forward chaining   ", font=FONT, fg=BLACK, bg=WHITE, variable=opcion, value=1,
+ForwardChaining = Radiobutton(text="Forward chaining   ", variable=opcion, value=1,
                               command=selectLearning)
 ForwardChaining.grid(column=0, row=0)
 
-BackwardChaining = Radiobutton(text="Backward chaining", font=FONT, fg=BLACK, bg=WHITE, variable=opcion, value=2,
+BackwardChaining = Radiobutton(text="Backward chaining", variable=opcion, value=2,
                                command=selectLearning, pady=10)
 BackwardChaining.grid(column=0, row=1)
 
 # Reset learning button
-resetButton = Button(text="Reset options", highlightbackground=WHITE, command=resetLearningSelect)
+resetButton = ttk.Button(text="Reset options", command=resetLearningSelect)
 resetButton.grid(column=0, row=2)
 
 # Goal label
-goalLabel = Label(text="Goal", fg=BLACK, font=FONT, bg=WHITE)
+goalLabel = Label(text="Goal")
 goalLabel.grid(column=1, row=0)
 
 # Goal Combobox
-style= ttk.Style()
-style.theme_use('default')
-style.configure("TCombobox", background= WHITE)
-goalChoosen = ttk.Combobox(window, foreground=WHITE, state="readonly")
+var = StringVar()
+goalChoosen = ttk.Combobox(window, textvariable=var, state="readonly")
 goalChoosen['values'] = (
     'Manzana',
     'Pera',
@@ -113,22 +113,22 @@ goalChoosen['values'] = (
 goalChoosen.grid(column=1, row=1)
 
 # Result label
-resultLabel = Label(text="Result", fg=BLACK, font=FONT, bg=WHITE)
+resultLabel = Label(text="Result")
 resultLabel.grid(column=2, row=0)
 
 # Entry
-resultOutput = Entry(width=21, highlightbackground=WHITE, fg=BLACK, bg=WHITE)
+resultOutput = Entry(width=21)
 resultOutput.grid(column=2, row=1)
-printResult("TestA")
 printResult("TestB")
 
 # TextBox
-outputText = Text(window, height=20, width=100, bg="light blue")
+outputText = Text(window, height=20, width=100, highlightbackground="#A9A9A9")
 outputText.grid(column=0, row=3, columnspan=3, pady=(20, 10))
+var.trace('w', printGoal) # Favor de no mover esta linea de lugar
 printOutput("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")  # Ejemplo
 
 # Reset output button
-resetButton = Button(text="Reset output", highlightbackground=WHITE, command=resetOutput)
+resetButton = ttk.Button(text="Reset output", command=resetOutput)
 resetButton.grid(column=0, row=4)
 
 window.mainloop()
