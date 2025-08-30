@@ -15,6 +15,7 @@
 # ------------ Resources / Documentation involved -------------
 # How to make Tkinter look modern? - How to use themes in Tkinter: https://www.reddit.com/r/Python/comments/lps11c/how_to_make_tkinter_look_modern_how_to_use_themes/
 
+
 # ------------------------- Libraries -------------------------
 import tkinter as tk
 from tkinter import *
