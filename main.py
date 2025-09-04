@@ -8,7 +8,7 @@
 # +----------------------------------------------------------------------------+
 # | Author.......: Vanessa Reteguín <vanessa@reteguin.com>
 # | First release: August 29th, 2025
-# | Last update..: August 29th, 2025
+# | Last update..: September 3rd, 2025
 # | WhatIs.......: Automotive Inference System - Main
 # +----------------------------------------------------------------------------+
 
@@ -17,18 +17,13 @@
 
 # ------------------------- Libraries -------------------------
 import tkinter as tk
-from tkinter import IntVar, Radiobutton, Button, Label, StringVar, Entry, Text
+from tkinter import IntVar, Radiobutton, Button, Label, StringVar, Entry, Text, Menu
 from tkinter import ttk
 
 import sv_ttk
 
-# ---------------------------- GUI constraints ------------------------------- #
-DARK_BLUE2 = "#OB3954"
-DARK_BLUE = "#001111"
-WHITE = "#ffffff"
-BLACK = "#000000"
+# ----------------------- GUI functions -----------------------
 
-# -------------------------- GUI Functions ----------------------------- #
 # Output Textbox (blue)
 def printOutput(text):
     outputText.config(state=tk.NORMAL)
@@ -62,31 +57,115 @@ def printGoal(*arg):
     printOutput(var.get())
     print(var.get())
 
+# Pop up
+def open_popup():
+    popup = tk.Toplevel()
+    popup.title("Data")
 
-# ---------------------------- UI Set up ------------------------------- #
+    tk.Label(popup, text="Wheels:").grid(row=0, column=0, padx=5, pady=5)
+    wheelsEntry = tk.Entry(popup)
+    wheelsEntry.grid(row=0, column=1, padx=5, pady=5)
+
+    tk.Label(popup, text="Doors:").grid(row=1, column=0, padx=5, pady=5)
+    doorsEntry = tk.Entry(popup)
+    doorsEntry.grid(row=1, column=1, padx=5, pady=5)
+
+    def submit_data():
+        print(f"Wheels: {wheelsEntry.get()}")
+        print(f"Doors: {doorsEntry.get()}")
+        popup.destroy()  # Close the pop-up after submission
+
+    submit_button = tk.Button(popup, text="Submit", command=submit_data)
+    submit_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+
+# ------------------------- UI Set up ------------------------
+
 window = tk.Tk()
 window.title("Automotive Inference System")
 window.config(padx=20, pady=20)
-sv_ttk.set_theme("dark") # 'light' or 'dark'
 
-# Barra de menu
-barra_menus = tk.Menu()
-menu_archivo = tk.Menu(barra_menus, tearoff=False)
+# Menubar
+menubar = Menu(window)
+window.config(menu=menubar)
 
-dataBases = ["Base A", "Base B", "Base C"]
+# File menu
+fileMenu = Menu(
+    menubar,
+    tearoff=0
+)
 
-for i in dataBases:
-    menu_archivo.add_command(
-        label=f"{i}"
+fileMenuOptions = [["Start", ""], ["Reset", ""]]
+
+for i in fileMenuOptions:
+    fileMenu.add_command(
+        label=f"{i[0]}",
+        command=f"{i[1]}"
     )
-barra_menus.add_cascade(menu=menu_archivo, label="Base de datos")
 
-window.config(menu=barra_menus)
+fileMenu.add_separator()
+
+# Exit option
+fileMenu.add_command(
+    label='Exit',
+    command=window.destroy
+)
+
+# Data menu
+dataMenu = Menu(
+    menubar,
+    tearoff=0
+)
+
+dataMenuOptions = [["Set value", open_popup], ["Load data", ""]]
+
+for i in dataMenuOptions:
+    dataMenu.add_command(
+        label=f"{i[0]}",
+        command= i[1]
+    )
+
+# Data sub-menu
+dataSubMenu = Menu(dataMenu, tearoff=0)
+dataSubMenu.add_command(label='Test')
+
+
+# Help menu
+help_menu = Menu(
+    menubar,
+    tearoff=0
+)
+help_menu.add_command(label='Welcome')
+help_menu.add_command(label='About...')
+
+# Add menus to menubar
+dataMenu.add_cascade(
+    label="Preferences",
+    menu=dataSubMenu
+)
+
+menubar.add_cascade(
+    label="File",
+    menu=fileMenu,
+    underline=0
+)
+
+menubar.add_cascade(
+    label="Data",
+    menu=dataMenu,
+    underline=0
+)
+
+menubar.add_cascade(
+    label="Help",
+    menu=help_menu,
+    underline=0
+)
+
 
 # Forward/Backward learning
 
 opcion = IntVar()
-
 ForwardChaining = Radiobutton(text="Forward chaining   ", variable=opcion, value=1,
                               command=selectLearning)
 ForwardChaining.grid(column=0, row=0)
