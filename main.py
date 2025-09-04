@@ -78,6 +78,8 @@ def open_popup():
     submit_button = tk.Button(popup, text="Submit", command=submit_data)
     submit_button.grid(row=2, column=0, columnspan=2, pady=10)
 
+def yocsan():
+    pass
 
 # ------------------------- UI Set up ------------------------
 
