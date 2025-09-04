@@ -8,7 +8,7 @@
 # +----------------------------------------------------------------------------+
 # | Author.......: Vanessa Reteguín <vanessa@reteguin.com>
 # | First release: August 29th, 2025
-# | Last update..: September 3rd, 2025
+# | Last update..: September 4th, 2025
 # | WhatIs.......: Automotive Inference System - Main
 # +----------------------------------------------------------------------------+
 
@@ -102,14 +102,27 @@ for i in fileMenuOptions:
         label=f"{i[0]}",
         command=f"{i[1]}"
     )
-
-fileMenu.add_separator()
+    fileMenu.add_separator()
 
 # Exit option
 fileMenu.add_command(
     label='Exit',
     command=window.destroy
 )
+
+# Data menu
+ruleBaseMenu = Menu(
+    menubar,
+    tearoff=0
+)
+
+ruleBaseMenuOptions = [["Vehicles", ""], ["Bugs", ""], ["Plants", ""], ["Motor", ""]]
+
+for i in ruleBaseMenuOptions:
+    ruleBaseMenu.add_command(
+        label=f"{i[0]}",
+        command=f"{i[1]}"
+    )
 
 # Data menu
 dataMenu = Menu(
@@ -125,10 +138,6 @@ for i in dataMenuOptions:
         command= i[1]
     )
 
-# Data sub-menu
-dataSubMenu = Menu(dataMenu, tearoff=0)
-dataSubMenu.add_command(label='Test')
-
 
 # Help menu
 help_menu = Menu(
@@ -139,14 +148,15 @@ help_menu.add_command(label='Welcome')
 help_menu.add_command(label='About...')
 
 # Add menus to menubar
-dataMenu.add_cascade(
-    label="Preferences",
-    menu=dataSubMenu
-)
-
 menubar.add_cascade(
     label="File",
     menu=fileMenu,
+    underline=0
+)
+
+menubar.add_cascade(
+    label="RuleBase",
+    menu=ruleBaseMenu,
     underline=0
 )
 
