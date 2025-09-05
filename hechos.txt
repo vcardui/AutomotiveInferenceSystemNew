@@ -1,0 +1,4 @@
+num_wheels=4
+motor=yes
+size=medium
+num_doors=3
