@@ -55,7 +55,7 @@ def printResult(text):
 
 def cargar_rulebase():
     global reglas_cargadas
-    archivo_reglas = "Sistema_Experto/base.txt"
+    archivo_reglas = "base.txt"
     reglas_cargadas = cargar_reglas(archivo_reglas)
     resetOutput()
     printOutput("=== BASE DE REGLAS CARGADA ===")
@@ -64,7 +64,7 @@ def cargar_rulebase():
 
 def cargar_datos():
     global hechos_cargados
-    archivo_hechos = "Sistema_Experto/hechos.txt"
+    archivo_hechos = "hechos.txt"
     hechos_cargados = cargar_hechos(archivo_hechos)
     printOutput("\n=== HECHOS CARGADOS ===")
     for k, v in hechos_cargados.items():
