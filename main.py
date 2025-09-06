@@ -19,6 +19,7 @@
 # app.py
 
 from Forward import cargar_reglas, cargar_hechos, forward_chaining
+from Backward import cargar_reglas as cargar_reglas_b, cargar_hechos as cargar_hechos_b, run_backward
 import tkinter as tk
 from tkinter import IntVar, Radiobutton, Button, Label, StringVar, Entry, Text, Menu
 from tkinter import ttk
@@ -27,6 +28,7 @@ import sv_ttk
 # Variables globales para almacenar reglas y hechos cargados
 reglas_cargadas = []
 hechos_cargados = {}
+hechos_temporales = {}
 
 # ----------------------- GUI functions -----------------------
 
@@ -53,7 +55,7 @@ def printResult(text):
 
 def cargar_rulebase():
     global reglas_cargadas
-    archivo_reglas = "base.txt"
+    archivo_reglas = "Sistema_Experto/base.txt"
     reglas_cargadas = cargar_reglas(archivo_reglas)
     resetOutput()
     printOutput("=== BASE DE REGLAS CARGADA ===")
@@ -62,35 +64,63 @@ def cargar_rulebase():
 
 def cargar_datos():
     global hechos_cargados
-    archivo_hechos = "hechos.txt"
+    archivo_hechos = "Sistema_Experto/hechos.txt"
     hechos_cargados = cargar_hechos(archivo_hechos)
     printOutput("\n=== HECHOS CARGADOS ===")
     for k, v in hechos_cargados.items():
         printOutput(f"{k} = {v}")
 
 def run_inference():
-    if opcion.get() != 1:
-        printOutput("⚠ Debe seleccionar un metodo de inferencia antes de continuar.")
-        return
+    if  opcion.get() == 1:
+        if not reglas_cargadas:
+            printOutput("⚠ No hay base de reglas cargada.")
+            return
 
-    if not reglas_cargadas:
-        printOutput("⚠ No hay base de reglas cargada.")
-        return
+        if not hechos_cargados:
+            printOutput("⚠ No hay hechos cargados.")
+            printResult("NULL")
+            return
+        
+        resultado = forward_chaining(reglas_cargadas, hechos_cargados.copy())
+        printOutput("\n=== RESULTADO INFERENCIA ===")
+        for k, v in resultado.items():
+            printOutput(f"{k} = {v}")
 
-    if not hechos_cargados:
-        printOutput("⚠ No hay hechos cargados.")
-        printResult("NULL")
-        return
+        if "vehicle" in resultado:
+            printResult(resultado["vehicle"])
+        else:
+            printResult("No se pudo inferir vehículo")
 
-    resultado = forward_chaining(reglas_cargadas, hechos_cargados.copy())
-    printOutput("\n=== RESULTADO INFERENCIA ===")
-    for k, v in resultado.items():
-        printOutput(f"{k} = {v}")
-
-    if "vehicle" in resultado:
-        printResult(resultado["vehicle"])
+    elif opcion.get() == 2:
+        global hechos_temporales
+        
+        if not reglas_cargadas:
+            printOutput("⚠ No hay base de reglas cargada.")
+            return
+    
+        hechos_temporales = run_backward(reglas = reglas_cargadas, archivo_hechos =None if not hechos_cargados else "Sistema_Experto/hechos.txt", 
+                                         print_callback = printOutput, result_callback = printResult)
+    
     else:
-        printResult("No se pudo inferir vehículo")
+        printOutput("⚠ Debe seleccionar un metodo de inferencia antes de continuar.")
+        
+
+def reset_all():
+    global reglas_cargadas, hechos_cargados, hechos_temporales
+
+    # Vaciar variables globales
+    reglas_cargadas = []
+    hechos_cargados = {}
+    hechos_temporales = {}
+
+    # Limpiar salidas
+    resetOutput()
+    printResult("")
+
+    # (Opcional) limpiar la selección de Forward/Backward
+    opcion.set(0)
+
+    printOutput("=== Sistema reiniciado: reglas y datos borrados ===")
 
 # ------------------------- UI Set up ------------------------
 
@@ -108,7 +138,7 @@ window.config(menu=menubar)
 fileMenu = Menu(menubar, tearoff=0)
 fileMenu.add_command(label="Start", command=run_inference)
 fileMenu.add_separator()
-fileMenu.add_command(label="Reset", command=resetOutput)
+fileMenu.add_command(label="Reset", command=reset_all)
 fileMenu.add_separator()
 fileMenu.add_command(label="Exit", command=window.destroy)
 
@@ -144,8 +174,8 @@ BackwardChaining = Radiobutton(text="Backward chaining", variable=opcion, value=
 BackwardChaining.grid(column=0, row=1)
 
 # Reset learning button
-resetButton = ttk.Button(text="Reset options", command=lambda: opcion.set(None))
-resetButton.grid(column=0, row=2)
+#resetButton = ttk.Button(text="Reset options", command=lambda: opcion.set(None))
+#resetButton.grid(column=0, row=2)
 
 # Goal label
 goalLabel = Label(text="Goal")
@@ -154,7 +184,7 @@ goalLabel.grid(column=1, row=0)
 # Goal Combobox
 var = StringVar()
 goalChoosen = ttk.Combobox(window, textvariable=var, state="readonly")
-goalChoosen['values'] = ('Manzana', 'Pera', 'Limón')
+goalChoosen['values'] = ('Vehicle')
 goalChoosen.grid(column=1, row=1)
 
 # Result label
@@ -171,7 +201,7 @@ outputText = Text(window, height=20, width=100, highlightbackground="#A9A9A9")
 outputText.grid(column=0, row=3, columnspan=3, pady=(20, 10))
 
 # Reset output button
-resetButton = ttk.Button(text="Reset output", command=resetOutput)
-resetButton.grid(column=0, row=4)
+#resetButton = ttk.Button(text="Reset output", command=resetOutput)
+#resetButton.grid(column=0, row=4)
 
 window.mainloop()
