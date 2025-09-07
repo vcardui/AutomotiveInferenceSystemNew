@@ -130,7 +130,7 @@ def open_popup():
             hechos_actuales[variable] = valor
 
         # Reescribir el archivo con todos los hechos
-        with open("Sistema_Experto/hechos.txt", "w") as f:
+        with open("hechos.txt", "w") as f:
             for k, v in hechos_actuales.items():
                 f.write(f"{k}={v}\n")
 
@@ -145,7 +145,7 @@ def open_popup():
 
 def cargar_rulebase():
     global reglas_cargadas
-    archivo_reglas = "Sistema_Experto/base.txt"
+    archivo_reglas = "base.txt"
     reglas_cargadas = cargar_reglas(archivo_reglas)
     resetOutput()
     printOutput("=== BASE DE REGLAS CARGADA ===")
@@ -154,7 +154,7 @@ def cargar_rulebase():
 
 def cargar_datos():
     global hechos_cargados
-    archivo_hechos = "Sistema_Experto/hechos.txt"
+    archivo_hechos = "hechos.txt"
     hechos_cargados = cargar_hechos(archivo_hechos)
     printOutput("\n=== HECHOS CARGADOS ===")
     for k, v in hechos_cargados.items():
@@ -188,7 +188,7 @@ def run_inference():
             printOutput("⚠ No hay base de reglas cargada.")
             return
 
-        hechos_temporales = run_backward(reglas = reglas_cargadas, archivo_hechos =None if not hechos_cargados else "Sistema_Experto/hechos.txt",
+        hechos_temporales = run_backward(reglas = reglas_cargadas, archivo_hechos =None if not hechos_cargados else "hechos.txt",
                                          print_callback = printOutput, result_callback = printResult)
 
     else:
@@ -198,7 +198,7 @@ def run_inference():
 def reset_all():
     global reglas_cargadas, hechos_cargados, hechos_temporales, archivo_modificado
 
-    with open("Sistema_Experto/hechos.txt", "w") as f:
+    with open("hechos.txt", "w") as f:
         f.write(HECHOS_ORIGINALES)
 
     archivo_modificado = False  # <- reset del flag
