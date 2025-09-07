@@ -240,9 +240,9 @@ fileMenu.add_command(label="Exit", command=window.destroy)
 # RuleBase menu
 ruleBaseMenu = Menu(menubar, tearoff=0)
 ruleBaseMenu.add_command(label="Vehicles", command=cargar_rulebase)
-ruleBaseMenu.add_command(label="Bugs", command=lambda: printOutput("Base Bugs no implementada"))
-ruleBaseMenu.add_command(label="Plants", command=lambda: printOutput("Base Plants no implementada"))
-ruleBaseMenu.add_command(label="Motor", command=lambda: printOutput("Base Motor no implementada"))
+# ruleBaseMenu.add_command(label="Bugs", command=lambda: printOutput("Base Bugs no implementada"))
+# ruleBaseMenu.add_command(label="Plants", command=lambda: printOutput("Base Plants no implementada"))
+# ruleBaseMenu.add_command(label="Motor", command=lambda: printOutput("Base Motor no implementada"))
 
 # Data menu
 dataMenu = Menu(menubar, tearoff=0)
