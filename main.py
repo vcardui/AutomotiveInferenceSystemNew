@@ -31,6 +31,12 @@ import sv_ttk
 reglas_cargadas = []
 hechos_cargados = {}
 hechos_temporales = {}
+archivo_modificado = False
+HECHOS_ORIGINALES = """num_wheels=4
+motor=yes
+size=medium
+num_doors=3
+"""
 
 # ----------------------- GUI functions -----------------------
 
@@ -58,10 +64,7 @@ def open_popup():
     popup.title("Set Boolean Rule Base Variables")
 
     rulbaseJson = {
-        "vehicleType": [
-            "cycle",
-            "automobile"
-        ],
+        "vehicleType": ["cycle", "automobile"],
         "num_wheels": [2, 3, 4],
         "motor": ["no", "yes"],
         "size": ["small", "medium", "large"],
@@ -79,47 +82,70 @@ def open_popup():
     goalChoosen = ttk.Combobox(popup, textvariable=popupselect, state="readonly")
     goalChoosen.grid(row=0, column=1, padx=5, pady=5)
 
-    listboxItem = ""
+    listboxItem = ""  # definida en el ámbito de open_popup
+
+    def selected_item(chosenVar):
+        nonlocal listboxItem
+        if chosenVar != "":
+            listboxItem = chosenVar
+            goalChoosen['values'] = rulbaseJson[chosenVar]
+
     def callback(event):
         selection = event.widget.curselection()
         if selection:
             index = selection[0]
             data = event.widget.get(index)
             selected_item(data)
-        else:
-            selected_item("")
-
 
     listbox.bind("<<ListboxSelect>>", callback)
 
-
-    def selected_item(chosenVar):
-        if chosenVar != "":
-            listboxItem = chosenVar
-
-        goalChoosenValues = []
-
-        if chosenVar != "":
-            for i in rulbaseJson[chosenVar]:
-                goalChoosenValues.append(i)
-
-        goalChoosen['values'] = goalChoosenValues
-
-        print(chosenVar)
-
     def submit_data():
-        print(f"goalChoosen: {goalChoosen.get()}")
-        print(f"listbox: {listboxItem}")
-        popup.destroy()  # Close the pop-up after submission
+        global archivo_modificado
+        variable = listboxItem
+        valor = goalChoosen.get()
+
+        if not (variable and valor):
+            printOutput("⚠ No se seleccionó variable o valor")
+            popup.destroy()
+            return
+
+        hechos_actuales = {}
+
+        if not archivo_modificado:
+            # Primer set después del reset: sobrescribir todo
+            hechos_actuales = {variable: valor}
+            archivo_modificado = True
+        else:
+            # Leer hechos existentes
+            try:
+                with open("Sistema_Experto/hechos.txt", "r") as f:
+                    for line in f:
+                        if "=" in line:
+                            k, v = line.strip().split("=", 1)
+                            hechos_actuales[k] = v
+            except FileNotFoundError:
+                pass
+
+            # Actualizar o agregar el nuevo valor
+            hechos_actuales[variable] = valor
+
+        # Reescribir el archivo con todos los hechos
+        with open("Sistema_Experto/hechos.txt", "w") as f:
+            for k, v in hechos_actuales.items():
+                f.write(f"{k}={v}\n")
+
+        printOutput(f"✔ Se guardó: {variable} = {valor} (hechos.txt actualizado)")
+        popup.destroy()
 
     submit_button = tk.Button(popup, text="Guardar cambios", command=submit_data)
     submit_button.grid(row=2, column=0, columnspan=2, pady=10)
+
 
 # ---------------------- FUNCIONES LÓGICAS ----------------------
 
 def cargar_rulebase():
     global reglas_cargadas
-    archivo_reglas = "base.txt"
+    archivo_reglas = "Sistema_Experto/base.txt"
     reglas_cargadas = cargar_reglas(archivo_reglas)
     resetOutput()
     printOutput("=== BASE DE REGLAS CARGADA ===")
@@ -128,7 +154,7 @@ def cargar_rulebase():
 
 def cargar_datos():
     global hechos_cargados
-    archivo_hechos = "hechos.txt"
+    archivo_hechos = "Sistema_Experto/hechos.txt"
     hechos_cargados = cargar_hechos(archivo_hechos)
     printOutput("\n=== HECHOS CARGADOS ===")
     for k, v in hechos_cargados.items():
@@ -170,7 +196,12 @@ def run_inference():
 
 
 def reset_all():
-    global reglas_cargadas, hechos_cargados, hechos_temporales
+    global reglas_cargadas, hechos_cargados, hechos_temporales, archivo_modificado
+
+    with open("Sistema_Experto/hechos.txt", "w") as f:
+        f.write(HECHOS_ORIGINALES)
+
+    archivo_modificado = False  # <- reset del flag
 
     # Vaciar variables globales
     reglas_cargadas = []
