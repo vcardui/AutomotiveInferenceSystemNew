@@ -1,0 +1,53 @@
+{
+    "bicycle": {
+        "vehicleType": "cycle",
+        "num_wheels": 2,
+        "motor": "no",
+        "vehicle": "Bicycle"
+    },
+    "tricycle": {
+        "vehicleType": "cycle",
+        "num_wheels": 3,
+        "motor": "no",
+        "vehicle": "Tricycle"
+    },
+    "motorcycle": {
+        "vehicleType": "cycle",
+        "num_wheels": 2,
+        "motor": "yes",
+        "vehicle": "Motorcycle"
+    },
+    "sportsCar": {
+        "vehicleType": "automobile",
+        "size": "small",
+        "num_doors": 2,
+        "vehicle": "Sports_Car"
+    },
+    "sedan": {
+        "vehicleType": "automobile",
+        "size": "medium",
+        "num_doors": 4,
+        "vehicle": "Sedan"
+    },
+    "miniVan": {
+        "vehicleType": "automobile",
+        "size": "medium",
+        "num_doors": 3,
+        "vehicle": "MiniVan"
+    },
+    "SUV": {
+        "vehicleType": "automobile",
+        "size": "large",
+        "num_doors": 4,
+        "vehicle": "Sports_Utility_Vehicle"
+    },
+    "Cycle": {
+        "num_wheels": 2,
+        "vehicleType": "cycle"
+    },
+    "Automobile": {
+        "num_wheels": 4,
+        "motor": "yes",
+        "vehicleType": "automobile"
+    }
+}

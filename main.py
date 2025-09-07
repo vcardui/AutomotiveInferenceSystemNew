@@ -7,8 +7,10 @@
 # | www.cardui.com/carduiframework/license/license.txt
 # +----------------------------------------------------------------------------+
 # | Author.......: Vanessa Reteguín <vanessa@reteguin.com>
+# | Author.......: Yocsan Luevano <https://github.com/yocsan15>
+# | Author.......: Eduardo Isaí López <https://github.com/VendosPan>
 # | First release: August 29th, 2025
-# | Last update..: September 4th, 2025
+# | Last update..: September 6th, 2025
 # | WhatIs.......: Automotive Inference System - Main
 # +----------------------------------------------------------------------------+
 
@@ -51,6 +53,68 @@ def printResult(text):
     resultOutput.insert(0, text)
     resultOutput.configure(state="disabled")
 
+def open_popup():
+    popup = tk.Toplevel()
+    popup.title("Set Boolean Rule Base Variables")
+
+    rulbaseJson = {
+        "vehicleType": [
+            "cycle",
+            "automobile"
+        ],
+        "num_wheels": [2, 3, 4],
+        "motor": ["no", "yes"],
+        "size": ["small", "medium", "large"],
+        "num_doors": [2, 3, 4]
+    }
+
+    listbox = tk.Listbox(popup)
+    a = 1
+    for i in rulbaseJson:
+        listbox.insert(a, i)
+        a += 1
+    listbox.grid(row=0, column=0, padx=5, pady=5)
+
+    popupselect = StringVar()
+    goalChoosen = ttk.Combobox(popup, textvariable=popupselect, state="readonly")
+    goalChoosen.grid(row=0, column=1, padx=5, pady=5)
+
+    listboxItem = ""
+    def callback(event):
+        selection = event.widget.curselection()
+        if selection:
+            index = selection[0]
+            data = event.widget.get(index)
+            selected_item(data)
+        else:
+            selected_item("")
+
+
+    listbox.bind("<<ListboxSelect>>", callback)
+
+
+    def selected_item(chosenVar):
+        if chosenVar != "":
+            listboxItem = chosenVar
+
+        goalChoosenValues = []
+
+        if chosenVar != "":
+            for i in rulbaseJson[chosenVar]:
+                goalChoosenValues.append(i)
+
+        goalChoosen['values'] = goalChoosenValues
+
+        print(chosenVar)
+
+    def submit_data():
+        print(f"goalChoosen: {goalChoosen.get()}")
+        print(f"listbox: {listboxItem}")
+        popup.destroy()  # Close the pop-up after submission
+
+    submit_button = tk.Button(popup, text="Guardar cambios", command=submit_data)
+    submit_button.grid(row=2, column=0, columnspan=2, pady=10)
+
 # ---------------------- FUNCIONES LÓGICAS ----------------------
 
 def cargar_rulebase():
@@ -80,7 +144,7 @@ def run_inference():
             printOutput("⚠ No hay hechos cargados.")
             printResult("NULL")
             return
-        
+
         resultado = forward_chaining(reglas_cargadas, hechos_cargados.copy())
         printOutput("\n=== RESULTADO INFERENCIA ===")
         for k, v in resultado.items():
@@ -93,17 +157,17 @@ def run_inference():
 
     elif opcion.get() == 2:
         global hechos_temporales
-        
+
         if not reglas_cargadas:
             printOutput("⚠ No hay base de reglas cargada.")
             return
-    
-        hechos_temporales = run_backward(reglas = reglas_cargadas, archivo_hechos =None if not hechos_cargados else "Sistema_Experto/hechos.txt", 
+
+        hechos_temporales = run_backward(reglas = reglas_cargadas, archivo_hechos =None if not hechos_cargados else "Sistema_Experto/hechos.txt",
                                          print_callback = printOutput, result_callback = printResult)
-    
+
     else:
         printOutput("⚠ Debe seleccionar un metodo de inferencia antes de continuar.")
-        
+
 
 def reset_all():
     global reglas_cargadas, hechos_cargados, hechos_temporales
@@ -151,8 +215,18 @@ ruleBaseMenu.add_command(label="Motor", command=lambda: printOutput("Base Motor 
 
 # Data menu
 dataMenu = Menu(menubar, tearoff=0)
-dataMenu.add_command(label="Set value", command=lambda: printOutput("Función Set value pendiente"))
-dataMenu.add_command(label="Load data", command=cargar_datos)
+
+
+dataMenuOptions = [["Set value", open_popup], ["Load data", cargar_datos]]
+
+for i in dataMenuOptions:
+    dataMenu.add_command(
+        label=f"{i[0]}",
+        command= i[1]
+    )
+
+########## dataMenu.add_command(label="Set value", command=lambda: printOutput("Función Set value pendiente"))
+########## dataMenu.add_command(label="Load data", command=cargar_datos)
 
 # Help menu
 help_menu = Menu(menubar, tearoff=0)
