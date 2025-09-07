@@ -10,7 +10,7 @@
 # | Author.......: Yocsan Luevano <https://github.com/yocsan15>
 # | Author.......: Eduardo Isaí López <https://github.com/VendosPan>
 # | First release: August 29th, 2025
-# | Last update..: September 6th, 2025
+# | Last update..: September 7th, 2025
 # | WhatIs.......: Automotive Inference System - Main
 # +----------------------------------------------------------------------------+
 
