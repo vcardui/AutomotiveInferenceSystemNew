@@ -2,7 +2,7 @@
 
 Rule-based Python system with forward and backward chaining inference engines. Communication between the system and the user has been enhanced with the Sun Valley theme for the Tkinter GUI toolkit. Users can load existing knowledge bases, are prompted to answer questions to narrow down options, and the system can draw conclusions based on new data.
 
-# **✌️ Team**
+## **✌️ Team**
 
 - Vanessa Reteguín - [vcardui](https://github.com/vcardui)
 - Yocsan Luevano - [yocsan15](https://github.com/yocsan15)
